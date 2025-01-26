@@ -1,3 +1,7 @@
 # Devcontainer
 Development Container
-Test
+Primary use case:
+
+Cloud init
+
+
