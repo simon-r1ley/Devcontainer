@@ -1,15 +1,18 @@
 version: '3.9'
 
 services:
-  dev-container:
-    image: ubuntu:latest
+  devcontainer:
+    image: mcr.microsoft.com/devcontainers/base:ubuntu
+    build: 
+          context: .
+          dockerfile: dockerfile
     container_name: dev-container
     tty: true
     stdin_open: true
     volumes:
       - ./dev:/workspace
     working_dir: /workspace
-    command: /bin/bash
+    command: sleep infinity
 
   jenkins-server:
     image: jenkins/jenkins:lts
@@ -24,6 +27,9 @@ services:
     environment:
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false
     restart: unless-stopped
+    links:
+      - jenkins-agent
+
 
   jenkins-agent:
     image: jenkins/agent:latest
@@ -33,11 +39,9 @@ services:
       - JENKINS_AGENT_NAME=agent
       - JENKINS_SECRET=
       - JENKINS_AGENT_WORKDIR=/home/jenkins/agent
-    depends_on:
-      - jenkins-server
     volumes:
       - /home/jenkins:/home/jenkins
     restart: unless-stopped
-
+   
 volumes:
   jenkins_home:
